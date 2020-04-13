@@ -1,0 +1,27 @@
+Suppose we wanted to print a banner for the following:
+"FREEZY BREEZE MAKES THREE TREES FREEZE"
+
+We want the letters to be pretty big since this is a banner:
+
+FFFFF
+F
+FFF
+F
+F
+
+EEEEE
+E
+EEE
+E
+EEEEE
+
+etc.
+Being a good problem decomposer, you probably noticed that rather than put all the cout's in the main function, it would be far more efficient to put them in functions. So we could have a "printE" function and a "printZ" function and so on.
+
+Write a program with functions that creates a banner of a word or phrase with lots of repeated letters. Some possibilities:
+
+FREEZY BREEZE MAKES FLEAS
+SNEEZE TWEETLE BEETLE PADDLE BATTLE
+SIX SICK CHICKS KICK
+SUE SEWS SUE'S SOCKS
+BEN BENDS BIM'S BROOM 

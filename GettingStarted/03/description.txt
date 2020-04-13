@@ -1,0 +1,9 @@
+As electronic stopwatches become cheaper and more accurate, we will no doubt be deluged with impossibly accurate measurements of time. Write a program that takes as input a time period given in seconds, and outputs the number of hours, minutes and seconds it represents. For example,
+Number of seconds: 3662
+Hours: 1
+Minutes: 1
+Seconds: 2     
+
+In the following, do decomposition prior to writing your program. Use functions wherever possible to create well-structured programs.
+
+
