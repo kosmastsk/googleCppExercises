@@ -1,0 +1,199 @@
+For the composer database system, we need a Composer class which encapsulates all the data we want to store on an individual composer. An object of this class can promote or demote itself (change its rank), and display its attributes.
+
+We also need a collection of Composer objects. For this, we define a Database class which manages the individual records. An object of this class can add or retrieve Composer objects, and display individual ones by invoking the display action of a Composer object.
+
+Finally, we need some kind of user interface to provide interactive operations on the database. This is a placeholder class, i.e., we really don't know what the user interface is going to look like yet, but we do know we will need one. Maybe it will be graphical, maybe text-based. For now, we define a placeholder which we can fill in later.
+
+Now that we have identified the classes for the composer database application, the next step is to define the attributes and actions for the classes. In a more complex application, we would sit down with pencil and paper or UML or CRC cards or OOD to map out the class hierarchy and how the objects interact.
+
+For our composer database, we define a Composer class which contains the relevant data we want to store on each composer. It also contains methods for manipulating rankings, and displaying the data.
+
+The Database class needs some kind of structure for holding Composer objects. We need to be able to add a new Composer object to the structure, as well as retrieve a specific Composer object. We'd also like to display all the objects either in order of entry, or by ranking.
+
+The User Interface class implements a menu-driven interface, with handlers that call actions in the Database class. 
+
+If the classes are easily understood and their attributes and actions clear, as in the composer application, it's relatively easy to design the classes. But if there are any questions in your mind as to how the classes relate and interact, it's best to draw it out first, and work through the details before starting to code.
+
+Once we have a clear picture of the design and have evaluated it (more on this soon), we define the interface for each class. We don't worry about implementation details at this point - just what are the attributes and actions, and what parts of a class' state and actions are available to other classes.
+
+In C++, we normally do this by defining a header file for each class. The Composer class has private data members for all the data we want to store on a composer. We need accessors (“get” methods) and mutators (“set” methods), as well as the primary actions for the class.
+
+// composer.h, Maggie Johnson
+// Description: The class for a Composer record.
+// The default ranking is 10 which is the lowest possible.
+// Notice we use const in C++ instead of #define.
+const int kDefaultRanking = 10;
+
+class Composer {
+ public:
+  // Constructor
+  Composer();
+  // Here is the destructor which has the same name as the class
+  // and is preceded by ~. It is called when an object is destroyed
+  // either by deletion, or when the object is on the stack and
+  // the method ends.
+  ~Composer();
+
+  // Accessors and Mutators
+  void set_first_name(string in_first_name);
+  string first_name();
+  void set_last_name(string in_last_name);
+  string last_name();
+  void set_composer_yob(int in_composer_yob);
+  int composer_yob();
+  void set_composer_genre(string in_composer_genre);
+  string composer_genre();
+  void set_ranking(int in_ranking);
+  int ranking();
+  void set_fact(string in_fact);
+  string fact();
+
+  // Methods
+  // This method increases a composer's rank by increment.
+  void Promote(int increment);
+  // This method decreases a composer's rank by decrement.
+  void Demote(int decrement);
+  // This method displays all the attributes of a composer.
+  void Display();
+
+ private:
+  string first_name_;
+  string last_name_;
+  int composer_yob_; // year of birth
+  string composer_genre_; // baroque, classical, romantic, etc.
+  string fact_;
+  int ranking_;
+};
+
+The Database class is straight-forward as well.
+
+// database.h, Maggie Johnson
+// Description: Class for a database of Composer records.
+#include  <iostream>
+#include "Composer.h"
+
+// Our database holds 100 composers, and no more.
+const int kMaxComposers = 100;
+
+class Database {
+ public:
+  Database();
+  ~Database();
+
+  // Add a new composer using operations in the Composer class.
+  // For convenience, we return a reference (pointer) to the new record.
+  Composer& AddComposer(string in_first_name, string in_last_name,
+                        string in_genre, int in_yob, string in_fact);
+  // Search for a composer based on last name. Return a reference to the
+  // found record.
+  Composer& GetComposer(string in_last_name);
+  // Display all composers in the database.
+  void DisplayAll();
+  // Sort database records by rank and then display all.
+  void DisplayByRank();
+
+ private:
+  // Store the individual records in an array.
+  Composer composers_[kMaxComposers];
+  // Track the next slot in the array to place a new record.
+  int next_slot_;
+};
+
+Notice how we have carefully encapsulated the composer-specific data in a separate class. We could have put a struct or class in the Database class to represent the Composer record, and accessed it directly there. But that would be "under-objectification", i.e., we are not modeling with objects as much as we could. 
+
+You'll see as you start to work on the implementation of the Composer and Database classes, that it is much cleaner to have a separate Composer class. In particular, having separate atomic operations on a Composer object greatly simplify the implementation of the Display() methods in the Database class.
+
+Of course, there is also such a thing as "over-objectification" where we try and make everything a class, or we have more classes than we need. It takes practice to find the right balance, and you'll find that individual programmers will have differing opinions. 
+
+Determining if you are over- or under-objectifying can often be sorted out by carefully diagramming your classes. As mentioned earlier, it's important to work out a class design before you start coding and this can help you analyze your approach. A common notation used for this purpose is UML (Unified Modeling Language) Now that we have the classes defined for the Composer and Database objects, we need an interface that allows the user to interact with the database. A simple menu will do the trick:
+
+Composer Database
+---------------------------------------------
+1) Add a new composer
+2) Retrieve a composer's data
+3) Promote/demote a composer's rank
+4) List all composers
+5) List all composers by rank
+0) Quit
+
+We could implement the user interface as a class, or as a procedural program. Not everything in a C++ program has to be a class. In fact, if the processing is sequential or task-oriented, as in this menu program, it's fine to implement it procedurally. It's important to implement it in such a way that it remains a "placeholder", i.e., if we want to create a graphical user interface at some point, we should not have to change anything in the system but the user interface.
+
+The last thing we need to complete the application is a program to test the classes. For the Composer class, we want a main() program that takes input, populates a composer object and then displays it to make sure the class is working properly. We also want to call all the methods of the Composer class.
+
+// test_composer.cpp, Maggie Johnson
+//
+// This program tests the Composer class.
+
+#include <iostream>
+#include "Composer.h"
+using namespace std;
+
+int main()
+{
+  cout << endl << "Testing the Composer class." << endl << endl;
+
+  Composer composer;
+
+  composer.set_first_name("Ludwig van");
+  composer.set_last_name("Beethoven");
+  composer.set_composer_yob(1770);
+  composer.set_composer_genre("Romantic");
+  composer.set_fact("Beethoven was completely deaf during the latter part of "
+    "his life - he never heard a performance of his 9th symphony.");
+  composer.Promote(2);
+  composer.Demote(1);
+  composer.Display();
+}
+
+We need a similar test program for the Database class.
+
+// test_database.cpp, Maggie Johnson
+//
+// Description: Test driver for a database of Composer records.
+#include <iostream>
+#include "Database.h"
+using namespace std;
+
+int main() {
+  Database myDB;
+
+  // Remember that AddComposer returns a reference to the new record.
+  Composer& comp1 = myDB.AddComposer("Ludwig van", "Beethoven", "Romantic", 1770,
+    "Beethoven was completely deaf during the latter part of his life - he never "
+    "heard a performance of his 9th symphony.");
+  comp1.Promote(7);
+
+  Composer& comp2 = myDB.AddComposer("Johann Sebastian", "Bach", "Baroque", 1685,
+    "Bach had 20 children, several of whom became famous musicians as well.");
+  comp2.Promote(5);
+
+  Composer& comp3 = myDB.AddComposer("Wolfgang Amadeus", "Mozart", "Classical", 1756,
+    "Mozart feared for his life during his last year - there is some evidence "
+    "that he was poisoned.");
+  comp3.Promote(2);
+
+  cout << endl << "all Composers: " << endl << endl;
+  myDB.DisplayAll();
+}
+
+Note that these simple test programs are a good first step, but they require us to manually inspect the output to be sure the program is working correctly. As a system gets larger, manual inspection of output rapidly becomes impractical. In a subsequent lesson, we'll introduce self-checking test programs in the form of unit tests.
+
+The design for our application is now complete. The next step is to implement the .cpp files for the classes and the user interface. To start, go ahead and copy/paste the .h and test driver code above into files, and compile them. Use the test drivers to test your classes. Then, implement the following interface:
+
+Composer Database
+---------------------------------------------
+1) Add a new composer
+2) Retrieve a composer's data
+3) Promote/demote a composer's rank
+4) List all composers
+5) List all composers by rank
+0) Quit
+
+Use the methods you defined in the Database class to implement the user interface. Make your methods error-proof. For example, a ranking should always be in the range 1-10. Don't let anyone add 101 composers either, unless you plan to change the data structure in the Database class.
+
+Remember - all your code needs to follow our coding conventions, which are repeated here for your convenience:
+
+Every program we write begins with a header comment, providing the name of the author, their contact information, a short description, and usage (if relevant). Every function/method begins with a comment on operation and usage.
+We add explanatory comments using full sentences, whenever the code does not document itself, for example, if the processing is tricky, non-obvious, interesting, or important.
+Always use descriptive names: variables are lower-case words separated by _, as in my_variable. Function/method names use upper-case letters to mark words, as in MyExcitingFunction(). Constants start with a "k" and use upper-case letters to mark words, as in kDaysInWeek.
+Indentation is in multiples of two. The first level is two spaces; if further indentation is needed, we use four spaces, six spaces, etc.
